@@ -50,7 +50,6 @@
 }
 \author[吉村 優]{%
   吉村 優 \\
-  Hikaru \textsc{Yoshimura} \\
   {\scriptsize \href{mailto:yyu@mental.poker}{yyu@mental.poker}}
 }
 \date[August 7, 2017]{%
@@ -58,7 +57,7 @@
   {\footnotesize (Commit ID: \GITAbrHash)}
 }
 \institute[urandom]{%
-  urandom \\
+  {\small urandom} \\
   \url{https://blog.urandom.team/} \\
 }
 
@@ -115,7 +114,7 @@
   \frametitle{はじめに}
 
   \begin{itemize}
-    \item<2-> CTFチームのメンバーで同人誌を書くことになった
+    \item<2-> 2年前にurandomで同人誌を書くことになった
     \item<3-> inDesignなどを買うお金はない
   \end{itemize}
 
@@ -134,7 +133,8 @@
   \begin{itemize}
     \item<2-> テキストベースなのでGitで管理できる
     \item<3-> フリーで使えるので特別なお金を必要としない
-    \item<4-> 数式や図を書くための豊富な表現力がある
+    \item<4-> 特定のメンバーが組版をするのではなく全員で組版できる
+    \item<5-> 数式や図を書くための豊富な表現力がある
   \end{itemize}
 \end{frame}
 
@@ -208,20 +208,20 @@
   \frametitle{同人誌の\TeX 構成}
 
   \begin{itemize}
-    \item<2-> Makefileで環境変数を設定し、それによってフォントを埋め込むか判定
+    \item<1-> Makefileで環境変数を設定し、それによってフォントを埋め込むか判定
     \begin{itemize}
       \item CI環境やMacユーザーの場合はフォント埋め込みPDFを作成する
       \item 著者の中にLinuxユーザーがおり、彼の環境でもコンパイルを通すため
     \end{itemize}
 
-    \item<3-> 入稿版、サンプル版、電子書籍版を作成
+    \item<2-> 入稿版、サンプル版、電子書籍版を作成
 
-    \item<4-> Pandoc用のテンプレートとMakefileを用意
+    \item<3-> Pandoc用の\TeX テンプレートとMakefileを用意
     \begin{itemize}
-      \item 実はPandocはバージョンごとに大分挙動が異なる
+      \item 実はPandocはバージョンやオプションごとに大分挙動が異なる
       \item READMEにCI環境のPandocバージョンを書き、
       Pandocに渡すオプションも事前に用意した
-      \item Pandocを適当に使って適当な\TeX を作られるのを防ぐため
+      \item Pandocを適当に使って適当な\TeX ファイルを作られるのを防ぐため
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -230,13 +230,13 @@
   \frametitle{Jenkins構成}
 
   \begin{itemize}
-    \item<1-> Mac miniに\TeX Liveをfullでインストール
+    \item<2-> Mac miniに\TeX Liveをfullでインストール
     \begin{itemize}
       \item 念のためSierraにはアップデートしていないが、
       C92以降にアップデートする予定
     \end{itemize}
     
-    \item<2-> Mac miniの上で直接Makefileを実行
+    \item<3-> Mac miniの上で直接Makefileを実行
     \begin{itemize}
       \item 本当はコンテナーを起動してmakeしたいけど、それはチームの課題
     \end{itemize}
@@ -270,7 +270,26 @@
 
 \begin{frame}
   \centering
-  {\huge Demo}
+  {\Huge Demo}
+\end{frame}
+
+\section{今後の課題}
+
+\begin{frame}
+  \frametitle{今後の課題}
+
+  \begin{itemize}
+    \item<2-> GitBucketからGerrit\footnote[frame]{\url{https://www.gerritcodereview.com/}}に乗り換えたい
+    \begin{itemize}
+      \item GitBucketはデグレが多い？
+      \item GitLabとかでもいいかも
+    \end{itemize}
+     
+    \item<3-> Mac miniにDockerなどのコンテナーを導入したい
+    \begin{itemize}
+      \item チームのメンバーががんばってくれる予定
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \section{まとめ}
@@ -281,19 +300,20 @@
   \begin{itemize}
     \item<2-> 複数人で\LaTeX を使うならCIは必須
     \begin{itemize}
-      \item 誰かのパソコンだけではコンパイルできる、ということもある
+      \item 誰かのパソコンだけでコンパイルできる、ということもある
     \end{itemize}
 
-    \item<3-> GitBucketよりGerrit\footnote[frame]{\url{https://www.gerritcodereview.com/}}に乗り換えたい
+    \item<3-> Lua\LaTeX は便利
     \begin{itemize}
-      \item GitBucketはデグレが多い？
+      \item 遅いという話題もあるが、最近の検証\footnote[frame]{\url{https://twitter.com/_yyu_/status/893437990759931904}}によるとそこまで遅くもない
     \end{itemize}
 
-    \item<4-> Mac miniにDockerなどのコンテナーを導入したい
+    \item<4-> \TeX ファイルを分割するならsubfilesパッケージを使うべき
     \begin{itemize}
-      \item チームのメンバーががんばってくれる予定
+      \item 最初は\texttt{input}でがんばっていたが、
+      プリアンブルを統一するのがとても大変だしミスの温床になる
     \end{itemize}
-
+    
     \item<5-> \LaTeX でどんどん同人誌を作りましょう！
   \end{itemize}
 \end{frame}
