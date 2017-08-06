@@ -1,0 +1,309 @@
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+%\usefonttheme{serif}
+\beamertemplatenavigationsymbolsempty
+
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamersize{description width=1cm}
+
+\usepackage{luacode}
+\usepackage{luatexja}
+\usepackage{pgfpages}
+
+\begin{luacode*}
+  USE_IPAFONT = os.getenv"USE_IPAFONT"
+  USE_YUFONT = os.getenv"USE_YUFONT"
+  
+  if USE_YUFONT == "true" then
+    tex.sprint("\\AtBeginDocument{\\usepackage[yu-osx, deluxe, expert]{luatexja-preset}}")
+  elseif USE_IPAFONT == "true" then
+    tex.sprint("\\AtBeginDocument{\\usepackage[ipaex, deluxe, expert]{luatexja-preset}}")
+  else
+    tex.sprint("\\AtBeginDocument{\\usepackage[hiragino-pro, deluxe, expert]{luatexja-preset}}")
+  end
+\end{luacode*}
+
+\usepackage{epigraph}
+\usepackage{etoolbox}
+\usepackage{tikz}
+\usepackage{framed}
+\usepackage[ss]{libertine}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{tikz-qtree}
+
+\renewcommand{\kanjifamilydefault}{\gtdefault}
+
+%\setbeameroption{show notes on second screen=right}
+
+\setmonofont[Ligatures=TeX]{CMU Typewriter Text}
+
+\input{vc.tex}
+
+\title[\LaTeX で作る同人誌]{%
+  \LaTeX で作る同人誌 \\
+  {\normalsize urandomを支える出版技術}
+}
+\author[吉村 優]{%
+  吉村 優 \\
+  Hikaru \textsc{Yoshimura} \\
+  {\scriptsize \href{mailto:yyu@mental.poker}{yyu@mental.poker}}
+}
+\date[August 7, 2017]{%
+  August 7, 2017 \\%
+  {\footnotesize (Commit ID: \GITAbrHash)}
+}
+\institute[urandom]{%
+  urandom \\
+  \url{https://blog.urandom.team/} \\
+}
+
+\input{./lib/quotebox.tex}
+\input{./lib/footnotemark.tex}
+\input{./lib/ballon.tex}
+\input{./lib/listings_setting.tex}
+
+\newcommand\ballref[1]{%
+\tikz \node[circle, shade,ball color=structure.fg,inner sep=0pt,%
+  text width=8pt,font=\tiny,align=center] {\color{white}\ref{#1}};
+}
+
+\begin{document}
+
+\frame{\maketitle}
+
+\begin{frame}
+  \frametitle{目次}
+
+  \tableofcontents
+\end{frame}
+
+\section{自己紹介}
+\begin{frame}
+  \frametitle{自己紹介}
+  
+  \begin{columns}
+    \begin{column}{0.3\textwidth}
+      \centering
+      \begin{figure}
+        \includegraphics[width=0.95\textwidth]{img/bird2x.png}
+      \end{figure}
+
+      \begin{description}
+        \item[Twitter] \href{https://twitter.com/\_yyu\_}{@\_yyu\_}
+        \item[Qiita] \href{http://qiita.com/yyu}{yyu}
+        \item[GitHub] \href{https://github.com/y-yu}{y-yu}
+      \end{description}
+    \end{column}
+    \begin{column}{0.7\textwidth}
+      \begin{itemize}
+        \item<2-> 筑波大学 情報科学類卒（学士）
+        \item<3-> CTFチームurandomに所属
+        \item<4-> コミケは4回当選
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{はじめに}
+
+\begin{frame}
+  \frametitle{はじめに}
+
+  \begin{itemize}
+    \item<2-> CTFチームのメンバーで同人誌を書くことになった
+    \item<3-> inDesignなどを買うお金はない
+  \end{itemize}
+
+  \begin{center}
+    \uncover<4->{
+      \begin{tikzpicture}
+        \calloutquote[width=7cm,position={(0.7,-0.2)},fill=red!30,rounded corners]{\LARGE \LaTeX で作ろう！}
+      \end{tikzpicture}
+    }
+  \end{center} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{\LaTeX でやることのよさ}
+
+  \begin{itemize}
+    \item<2-> テキストベースなのでGitで管理できる
+    \item<3-> フリーで使えるので特別なお金を必要としない
+    \item<4-> 数式や図を書くための豊富な表現力がある
+  \end{itemize}
+\end{frame}
+
+\section{歴史}
+
+\begin{frame}
+  \frametitle{最初のコミケ（C89）}
+
+  \begin{itemize}
+    \item<2-> とりあえずVPSにGitBucket\footnote[frame]{\url{https://gitbucket.github.io/}}を用意
+    \item<3-> ヒラギノフォントを埋め込むようにしたが、ヒラギノフォントがあるのは僕のパソコンだけ
+    \item<4-> commitされるたびに、Slackで呼び出されて手動ビルド
+  \end{itemize}
+
+  \begin{center}
+    \uncover<5->{
+      \begin{tikzpicture}
+        \calloutquote[width=3cm,position={(0.7,-0.2)},fill=green!30,rounded corners]{とてもつらい}
+      \end{tikzpicture}
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{4回目のコミケ（C92）}
+
+  \begin{itemize}
+    \item<2-> コンパイル用のMac miniを購入しJenkins Slaveへ
+    \item<3-> PDFのアップロードサーバーをVPSに構築
+    \item<4-> コンパイル結果をSlackへ自動投稿するシステムを構築
+  \end{itemize}
+
+  \begin{center}
+    \uncover<5->{
+      \begin{tikzpicture}
+        \calloutquote[width=4cm,position={(-
+          0.7,-0.2)},fill=green!30,rounded corners]{それなりに快適！}
+      \end{tikzpicture}
+    }
+  \end{center}
+\end{frame}
+
+\section{構成}
+
+\begin{frame}
+  \frametitle{同人誌の\TeX 構成}
+
+  \begin{itemize}
+    \item<2-> 処理系にはLua\LaTeX を選択
+    \begin{itemize}
+      \item フォントに対する柔軟性が高いから
+    \end{itemize}
+
+    \item<3-> ドキュメントクラスはBXjscls\footnote[frame]{\url{https://github.com/zr-tex8r/BXjscls}}を利用
+    \begin{itemize}
+      \item Lua\TeX-jaのパッケージだとバグがあったため
+      \item \TeX の処理系を自動検知してくれる機能などがあり、
+      同じ\TeX ファイルを複数の処理系でコンパイルすることもできるようになる
+      \item Pandocモードもある（僕たちは今回使っていない）
+    \end{itemize}
+
+    \item<4-> subfilesパッケージで\TeX ファイルを分割
+    \begin{itemize}
+      \item 分割された\TeX ファイルだけをコンパイルすることができる
+      \item プリアンブルを共有するので、プリアンブルの修正漏れがなくなる
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{同人誌の\TeX 構成}
+
+  \begin{itemize}
+    \item<2-> Makefileで環境変数を設定し、それによってフォントを埋め込むか判定
+    \begin{itemize}
+      \item CI環境やMacユーザーの場合はフォント埋め込みPDFを作成する
+      \item 著者の中にLinuxユーザーがおり、彼の環境でもコンパイルを通すため
+    \end{itemize}
+
+    \item<3-> 入稿版、サンプル版、電子書籍版を作成
+
+    \item<4-> Pandoc用のテンプレートとMakefileを用意
+    \begin{itemize}
+      \item 実はPandocはバージョンごとに大分挙動が異なる
+      \item READMEにCI環境のPandocバージョンを書き、
+      Pandocに渡すオプションも事前に用意した
+      \item Pandocを適当に使って適当な\TeX を作られるのを防ぐため
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jenkins構成}
+
+  \begin{itemize}
+    \item<1-> Mac miniに\TeX Liveをfullでインストール
+    \begin{itemize}
+      \item 念のためSierraにはアップデートしていないが、
+      C92以降にアップデートする予定
+    \end{itemize}
+    
+    \item<2-> Mac miniの上で直接Makefileを実行
+    \begin{itemize}
+      \item 本当はコンテナーを起動してmakeしたいけど、それはチームの課題
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jenkins構成}
+  
+  \begin{itemize}
+    \item<1-> GitHub PullRequest Builderプラグインを利用
+    \begin{itemize}
+      \item GitBucketプラグインではうまくいかなかったため
+      \item プラグインをアップグレードすると動かなくなることがあるので、
+      アップグレードは慎重に
+    \end{itemize}
+
+    \item<2-> Jenkinsのジョブの詳細はBashスクリプトにしてリポジトリに格納
+    \begin{itemize}
+      \item Jenkinsジョブの変更履歴を追跡するため
+    \end{itemize}
+
+    \item<3-> Slack通知は秘伝のJSONをCURLで送信
+    \begin{itemize}
+      \item 本当はよくないかも……
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Demo}
+
+\begin{frame}
+  \centering
+  {\huge Demo}
+\end{frame}
+
+\section{まとめ}
+
+\begin{frame}
+  \frametitle{まとめ}
+
+  \begin{itemize}
+    \item<2-> 複数人で\LaTeX を使うならCIは必須
+    \begin{itemize}
+      \item 誰かのパソコンだけではコンパイルできる、ということもある
+    \end{itemize}
+
+    \item<3-> GitBucketよりGerrit\footnote[frame]{\url{https://www.gerritcodereview.com/}}に乗り換えたい
+    \begin{itemize}
+      \item GitBucketはデグレが多い？
+    \end{itemize}
+
+    \item<4-> Mac miniにDockerなどのコンテナーを導入したい
+    \begin{itemize}
+      \item チームのメンバーががんばってくれる予定
+    \end{itemize}
+
+    \item<5-> \LaTeX でどんどん同人誌を作りましょう！
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \centering
+  {\Huge Thank you for your attention!\\
+    \vspace{1em}
+    Any question?
+  }
+\end{frame}
+
+\end{document}
